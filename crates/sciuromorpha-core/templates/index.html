@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}Sciuromorpha — 检索与媒体投递{% endblock %}
+
+{% block content %}
+<div class="grid-two">
+    <section class="card">
+        <h2 style="margin-top: 0;">全域多媒体检索</h2>
+        <form action="/" method="get"
+              hx-get="/"
+              hx-target="#search-results"
+              hx-push-url="true"
+              hx-trigger="submit, change from:#audio-only-toggle">
+            <input type="search"
+                   name="q"
+                   value="{{ query }}"
+                   placeholder="检索标题、作者、描述、字幕/OCR文本、标签（中日英混排）..." />
+            <div class="form-row">
+                <label class="checkbox-label">
+                    <input type="checkbox"
+                           id="audio-only-toggle"
+                           name="audio_only"
+                           value="true"
+                           {% if audio_only %}checked{% endif %} />
+                    仅听音频 (available_roles = derived_audio)
+                </label>
+                <button type="submit">检索</button>
+            </div>
+        </form>
+    </section>
+
+    {% if is_owner %}
+    <section class="card">
+        <h2 style="margin-top: 0;">URL 归档投递</h2>
+        <form action="/api/ingest/url" method="post"
+              hx-post="/api/ingest/url"
+              hx-target="#ingest-feedback"
+              hx-swap="innerHTML">
+            <input type="url"
+                   name="url"
+                   required
+                   placeholder="粘贴 Bilibili / YouTube / Twitter / Pixiv 链接..." />
+            <div class="form-row">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="extract_audio" value="true" checked />
+                    同时剥离 MP3 (写入 ID3 标签)
+                </label>
+                <button type="submit">投递抓取</button>
+            </div>
+        </form>
+        <div id="ingest-feedback" style="margin-top: 0.75rem;"></div>
+    </section>
+    {% endif %}
+</div>
+
+<section id="search-results" style="margin-top: 0.5rem;">
+    {% include "partials/item_list.html" %}
+</section>
+{% endblock %}

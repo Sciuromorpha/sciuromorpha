@@ -1,0 +1,12 @@
+<div class="card" style="margin-bottom: 0; border-color: #0ea5e9;">
+    <div>
+        <span class="badge badge-processing">已入队 VAULT_CMD</span>
+        <strong><a href="/items/{{ item_id }}">条目 {{ item_id }}</a></strong>
+    </div>
+    <div class="meta-line">
+        来源 URL: {{ url }}
+        {% if extract_audio %}
+        · 已勾选自动剥离 MP3
+        {% endif %}
+    </div>
+</div>

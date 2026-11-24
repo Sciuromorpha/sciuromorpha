@@ -1,0 +1,41 @@
+{% if items.is_empty() %}
+<div class="card">
+    <p class="meta-line" style="margin: 0;">暂无匹配的归档条目。</p>
+</div>
+{% else %}
+{% for item in items %}
+<article class="card">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+        <div>
+            <h3 style="margin: 0 0 0.35rem 0;">
+                <a href="/items/{{ item.id }}">{{ item.title }}</a>
+            </h3>
+            <div>
+                <span class="badge">{{ item.source_type }}</span>
+                <span class="badge">{{ item.item_type }}</span>
+                {% if item.status == "ready" %}
+                <span class="badge badge-ready">{{ item.status }}</span>
+                {% else %}
+                <span class="badge badge-processing">{{ item.status }}</span>
+                {% endif %}
+                {% for tag in item.acl_tags %}
+                <span class="badge">acl:{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% if !item.author_names.is_empty() %}
+            <div class="meta-line">
+                作者: {{ item.author_names.join(", ") }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="meta-line" style="white-space: nowrap;">
+            {{ item.captured_at_display }}
+        </div>
+    </div>
+
+    {% if item.has_derived_audio %}
+    <audio controls preload="none" src="/blobs/{{ item.id }}/role/derived_audio"></audio>
+    {% endif %}
+</article>
+{% endfor %}
+{% endif %}

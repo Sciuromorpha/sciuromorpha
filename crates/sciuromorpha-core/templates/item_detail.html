@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ item.title }} — Sciuromorpha{% endblock %}
+
+{% block content %}
+<article class="card">
+    <h1 style="margin-top: 0;">{{ item.title }}</h1>
+    <div>
+        <span class="badge">{{ item.source_type }}</span>
+        <span class="badge">{{ item.item_type }}</span>
+        <span class="badge">{{ item.status }}</span>
+        {% for tag in item.acl_tags %}
+        <span class="badge">acl:{{ tag }}</span>
+        {% endfor %}
+    </div>
+
+    {% if !item.author_names.is_empty() %}
+    <p class="meta-line">作者: {{ item.author_names.join(", ") }}</p>
+    {% endif %}
+
+    {% match item.source_url %}
+    {% when Some with (url) %}
+    <p class="meta-line">原始链接: <a href="{{ url }}" target="_blank" rel="noopener noreferrer">{{ url }}</a></p>
+    {% when None %}
+    {% endmatch %}
+
+    {% if has_primary_video %}
+    <h3>原始视频流 (支持 HTTP Range 拖动)</h3>
+    <video controls preload="metadata" src="/blobs/{{ item.id }}/role/primary_video"></video>
+    {% endif %}
+
+    {% if item.has_derived_audio %}
+    <h3>纯享音轨 (Derived MP3)</h3>
+    <audio controls preload="metadata" src="/blobs/{{ item.id }}/role/derived_audio"></audio>
+    {% endif %}
+
+    {% match description %}
+    {% when Some with (desc) %}
+    <h3>简介 / 原文</h3>
+    <p style="white-space: pre-wrap;">{{ desc }}</p>
+    {% when None %}
+    {% endmatch %}
+
+    <h3>关联资产与多副本状态 (CAS Blobs)</h3>
+    {% if blobs.is_empty() %}
+    <p class="meta-line">尚无落盘资产，正在异步抓取或处理中...</p>
+    {% else %}
+    <ul>
+        {% for b in blobs %}
+        <li class="meta-line">
+            <strong>{{ b.role }}</strong> — <code>{{ b.sha256 }}</code> ({{ b.mime_type }}, {{ b.size_bytes }} bytes)
+            — <a href="/blobs/{{ item.id }}/role/{{ b.role }}" target="_blank">直链访问</a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h3>扩展元数据 (JSONB extra_meta)</h3>
+    <pre style="background: #0b1120; padding: 0.75rem; border-radius: 0.4rem; overflow-x: auto; font-size: 0.85rem;">{{ extra_meta_pretty }}</pre>
+</article>
+{% endblock %}

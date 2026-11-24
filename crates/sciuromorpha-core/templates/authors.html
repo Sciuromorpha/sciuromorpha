@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block title %}作者归户与马甲合并 — Sciuromorpha{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2 style="margin-top: 0;">两层作者归户 (Entity Resolution)</h2>
+    <p class="meta-line">将跨平台账号（<code>author_identities</code>）归并至同一自然人实体（<code>authors</code>），保留历史原始平台署名血缘。</p>
+
+    {% if identities.is_empty() %}
+    <p class="meta-line">暂无已收录作者与平台马甲。</p>
+    {% else %}
+    <ul>
+        {% for ident in identities %}
+        <li class="meta-line">
+            <strong>{{ ident.author_display_name }}</strong>
+            (Author UUID: <code>{{ ident.author_id }}</code>)
+            ← [{{ ident.platform }}] <strong>{{ ident.handle }}</strong> (uid: <code>{{ ident.platform_uid }}</code>, identity: <code>{{ ident.identity_id }}</code>)
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</section>
+{% endblock %}

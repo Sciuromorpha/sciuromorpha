@@ -1,0 +1,9 @@
+<div class="card" id="stage-in-{{ blob_sha256 }}">
+    <div>
+        <span class="badge badge-processing">202 Offline Cold Storage</span>
+        <strong>该媒体当前仅存于离线冷备介质 ({{ backend_id }})</strong>
+    </div>
+    <p class="meta-line">
+        SHA-256: <code>{{ blob_sha256 }}</code> — 请挂载对应磁带/冷盘并等待 <code>storage-agent</code> 执行回迁 (Stage-in)。
+    </p>
+</div>
